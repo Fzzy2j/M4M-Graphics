@@ -223,5 +223,5 @@ module.exports = nodecg => {
 	})
 };
 
-updateSheetData()
+//updateSheetData()
 //setInterval(updateSheetData, 20000, 0);
