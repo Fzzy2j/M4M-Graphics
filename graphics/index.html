@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+<head>
+	<meta charset="UTF-8">
+	<style>
+		@font-face {
+			font-family: "NixieOne-Regular";
+			src: url("font/NixieOne-Regular.ttf");
+		}
+		@font-face {
+			font-family: "Semplicita";
+			src: url("font/Semplicita Light.otf");
+		}
+
+		.altFont {
+			font-family: "Semplicita";
+		}
+
+		.orangeStroke {
+			-webkit-text-stroke-width: 8px;
+			-webkit-text-stroke-color: #a45a28;
+		}
+
+		.wrap  {
+			white-space: normal;
+		}
+
+		p {
+			font-family: "NixieOne-Regular";
+			color: white;
+			margin: 0;
+			font-size: 50px;
+			white-space: nowrap;
+			-webkit-text-fill-color: white;
+			-webkit-text-stroke-width: 1px;
+			-webkit-text-stroke-color: white;
+		}
+
+		#hidden-resizer {
+			font-family: "NixieOne-Regular";
+		}
+
+		body {
+			margin: 0px auto;
+			overflow: hidden;
+		}
+
+		.bgImage {
+			position: absolute;
+			left: 0;
+			top: 0;
+			z-index: -1;
+		}
+
+		#scoreContainer {
+			position: absolute;
+			top: 250px;
+			left: 835px;
+		}
+
+		#scoreContainerCenter {
+			width: 200px;
+			height: 101px;
+		}
+
+		.centered {
+			width: 1920px;
+			position: absolute;
+			left: 0;
+			text-align: center;
+		}
+
+		.smallText {
+			font-size: 40px;
+		}
+	</style>
+</head>
+
+<body>
+	<img src="img/groupstagebg.png" id="backgroundImage" class="bgImage">
+
+	<div style="position: absolute; top: 270px; left: 885px; width: 150px; height: 101px; text-align: left;">
+		<p id="scoreLeft2" class="orangeStroke">0</p>
+	</div>
+	<div style="position: absolute; top: 270px; left: 885px; width: 150px; height: 101px; text-align: left;">
+		<p id="scoreLeft">0</p>
+	</div>
+	<div style="position: absolute; top: 270px; left: 885px; width: 150px; height: 101px; text-align: right;">
+		<p id="scoreRight2" class="orangeStroke">0</p>
+	</div>
+	<div style="position: absolute; top: 270px; left: 885px; width: 150px; height: 101px; text-align: right;">
+		<p id="scoreRight">0</p>
+	</div>
+
+	<div class="centered" style="top: 150px;">
+		<p class="altFont" id="round"></p>
+	</div>
+	<div class="centered" style="top: 205px;">
+		<p class="smallText altFont" id="bestOf"></p>
+	</div>
+
+
+	<div style="position:absolute; top:12px; left: 1590px; width: 315px; height: 165px;">
+		<p style="font-size: 40px; text-align: center;" id="upnext2" class="orangeStroke wrap"></p>
+	</div>
+	<div style="position:absolute; top:12px; left: 1590px; width: 315px; height: 165px;">
+		<p style="font-size: 40px; text-align: center;" id="upnext" class="wrap"></p>
+	</div>
+
+
+	<div style="position:absolute; top:930px; left: 710px; width: 500px;">
+		<p style="font-size: 40px; text-align: center;" id="caster12" class="orangeStroke"></p>
+	</div>
+	<div style="position:absolute; top:930px; left: 710px; width: 500px;">
+		<p style="font-size: 40px; text-align: center;" id="caster1"></p>
+	</div>
+
+	<div style="position:absolute; top:978px; left: 710px; width: 500px;">
+		<p style="font-size: 40px; text-align: center;" id="caster22" class="orangeStroke"></p>
+	</div>
+	<div style="position:absolute; top:978px; left: 710px; width: 500px;">
+		<p style="font-size: 40px; text-align: center;" id="caster2"></p>
+	</div>
+
+	<div style="position:absolute; top:1025px; left: 710px; width: 500px;">
+		<p style="font-size: 40px; text-align: center;" id="caster32" class="orangeStroke"></p>
+	</div>
+	<div style="position:absolute; top:1025px; left: 710px; width: 500px;">
+		<p style="font-size: 40px; text-align: center;" id="caster3"></p>
+	</div>
+
+
+	<div style="position:absolute; top:882px; left: 215px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerLeftSeed2" class="orangeStroke">00</p>
+	</div>
+	<div style="position:absolute; top:882px; left: 215px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerLeftSeed">00</p>
+	</div>
+
+	<div style="position:absolute; top:930px; left: 215px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerLeftWinLoss2" class="orangeStroke">0 - 0</p>
+	</div>
+	<div style="position:absolute; top:930px; left: 215px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerLeftWinLoss">0 - 0</p>
+	</div>
+
+	<div style="position:absolute; top:978px; left: 215px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerLeftTourneyPB2" class="orangeStroke">0:00</p>
+	</div>
+	<div style="position:absolute; top:978px; left: 215px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerLeftTourneyPB">0:00</p>
+	</div>
+
+	<div style="position:absolute; top:1025px; left: 215px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerLeftAverageTime2" class="orangeStroke">0:00</p>
+	</div>
+	<div style="position:absolute; top:1025px; left: 215px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerLeftAverageTime">0:00</p>
+	</div>
+
+	<div style="position:absolute; top:882px; left: 1558px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerRightSeed2" class="orangeStroke">00</p>
+	</div>
+	<div style="position:absolute; top:882px; left: 1558px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerRightSeed">00</p>
+	</div>
+
+	<div style="position:absolute; top:930px; left: 1558px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerRightWinLoss2" class="orangeStroke">0 - 0</p>
+	</div>
+	<div style="position:absolute; top:930px; left: 1558px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerRightWinLoss">0 - 0</p>
+	</div>
+
+	<div style="position:absolute; top:978px; left: 1558px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerRightTourneyPB2" class="orangeStroke">0:00</p>
+	</div>
+	<div style="position:absolute; top:978px; left: 1558px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerRightTourneyPB">0:00</p>
+	</div>
+
+	<div style="position:absolute; top:1025px; left: 1558px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerRightAverageTime2" class="orangeStroke">0:00</p>
+	</div>
+	<div style="position:absolute; top:1025px; left: 1558px; width: 143px;">
+		<p style="font-size: 40px; text-align: center;" id="playerRightAverageTime">0:00</p>
+	</div>
+
+	<script>
+		nodecg.listenFor("OnevsOneUpdate", (remoteState) => {
+			if (remoteState.socketId == undefined || remoteState.socketId !== nodecg.socket.id) {
+				for (key in remoteState) {
+					if (remoteState[key] !== undefined) {
+						if (key == "playerLeft") {
+							setTextWithBackground("leftPlayer", remoteState[key], 50, 0, 250, 470)
+						} else if (key == "playerRight") {
+							setTextWithBackground("rightPlayer", remoteState[key], 50, 1920 - 28, 250, 480, true)
+						} else {
+							$("#" + key).text(remoteState[key])
+							$("#" + key + "2").text(remoteState[key])
+						}
+					}
+				}
+				var level = remoteState.level.replaceAll(" ", "").toLowerCase()
+				if (!$("#backgroundImage").attr("src").includes(level)) {
+					var fade = $("#backgroundImage").clone()
+					fade.attr("id", "#backgroundImageFade")
+					fade.insertAfter("#backgroundImage")
+					$("#backgroundImage").attr("src", "img/" + level + "bg.png")
+					fade.animate({
+						opacity: 0
+					}, 1000, function () {
+						fade.remove()
+					})
+				}
+			}
+		})
+		function setTextWithBackground(id, text, size, posX, posY, widthLimit, alignRight) {
+			$("#" + id + "Container").remove()
+			$(document.body).append("<div id='" + id + "Container'><p class='orangeStroke' id='" + id + "Text1'>" + text + "</p><p id='" + id + "Text2'>" + text + "</p><div id='" + id + "BgCenter' src='img/bgCenter.png'></div></div>")
+			$("#" + id + "Container").css({
+				position: 'absolute',
+				top: posY,
+				left: posX,
+			})
+			$("#" + id + "Text1").css({
+				fontSize: size + 'px',
+				transform: 'translateX(25px)',
+				lineHeight: '101px',
+				position: 'fixed'
+			})
+			$("#" + id + "Text2").css({
+				fontSize: size + 'px',
+				transform: 'translateX(25px)',
+				lineHeight: '101px',
+				position: 'fixed',
+			})
+
+			while ($("#" + id + "Text1").width() > widthLimit) {
+				$("#" + id + "Text1").css("font-size", parseInt($("#" + id + "Text1").css("font-size")) - 1)
+			}
+
+			while ($("#" + id + "Text2").width() > widthLimit) {
+				$("#" + id + "Text2").css("font-size", parseInt($("#" + id + "Text2").css("font-size")) - 1)
+			}
+
+			$("#" + id + "BgCenter").css("height", 101)
+			$("#" + id + "BgCenter").css("width", $("#" + id + "Text1").width() + 20)
+			if (alignRight) {
+				$("#" + id + "Container").css("left", posX - $("#" + id + "Container").width())
+			}
+		}
+		$(document).ready(function () {
+			$('<div />', { id: 'hidden-resizer' }).hide().appendTo(document.body);
+			nodecg.sendMessage("OnevsOneStateRequest")
+		})
+	</script>
+</body>
+
+</html>
