@@ -20,7 +20,7 @@
 
 		.orangeStroke {
 			-webkit-text-stroke-width: 8px;
-			-webkit-text-stroke-color: #a45a28;
+			-webkit-text-stroke-color: #6E3A1A;
 		}
 
 		.wrap  {
@@ -81,16 +81,16 @@
 <body>
 	<img src="img/groupstagebg.png" id="backgroundImage" class="bgImage">
 
-	<div style="position: absolute; top: 270px; left: 885px; width: 150px; height: 101px; text-align: left;">
+	<div style="position: absolute; top: 270px; left: 825px; width: 150px; height: 101px; text-align: center;">
 		<p id="scoreLeft2" class="orangeStroke">0</p>
 	</div>
-	<div style="position: absolute; top: 270px; left: 885px; width: 150px; height: 101px; text-align: left;">
+	<div style="position: absolute; top: 270px; left: 825px; width: 150px; height: 101px; text-align: center;">
 		<p id="scoreLeft">0</p>
 	</div>
-	<div style="position: absolute; top: 270px; left: 885px; width: 150px; height: 101px; text-align: right;">
+	<div style="position: absolute; top: 270px; left: 945px; width: 150px; height: 101px; text-align: center;">
 		<p id="scoreRight2" class="orangeStroke">0</p>
 	</div>
-	<div style="position: absolute; top: 270px; left: 885px; width: 150px; height: 101px; text-align: right;">
+	<div style="position: absolute; top: 270px; left: 945px; width: 150px; height: 101px; text-align: center;">
 		<p id="scoreRight">0</p>
 	</div>
 
@@ -189,7 +189,7 @@
 	</div>
 
 	<script>
-		nodecg.listenFor("OnevsOneUpdate", (remoteState) => {
+		nodecg.listenFor("M4MUpdate", (remoteState) => {
 			if (remoteState.socketId == undefined || remoteState.socketId !== nodecg.socket.id) {
 				for (key in remoteState) {
 					if (remoteState[key] !== undefined) {
@@ -254,7 +254,7 @@
 		}
 		$(document).ready(function () {
 			$('<div />', { id: 'hidden-resizer' }).hide().appendTo(document.body);
-			nodecg.sendMessage("OnevsOneStateRequest")
+			nodecg.sendMessage("M4MStateRequest")
 		})
 	</script>
 </body>

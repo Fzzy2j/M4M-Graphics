@@ -1,5 +1,5 @@
 {
-  "name": "M4MGraphics",
+  "name": "M4M-Graphics",
   "version": "0.0.0",
   "description": "",
   "homepage": "",
@@ -20,18 +20,36 @@
   ],
   "nodecg": {
     "compatibleRange": "^2.1.3",
+    "soundCues": [
+      {
+        "name": "shatter",
+        "defaultFile": "sounds/break.ogg"
+      }
+    ],
     "dashboardPanels": [
       {
-        "name": "m3monevsonepanel",
+        "name": "m4monevsonepanel",
         "title": "One vs One",
         "width": 3,
-        "file": "panel.html",
+        "file": "onevsone.html",
+        "headerColor": "#525F78"
+      },
+      {
+        "name": "m4mpickbanpanel",
+        "title": "Picks and Bans",
+        "width": 3,
+        "file": "pickban.html",
         "headerColor": "#525F78"
       }
     ],
     "graphics": [
       {
-        "file": "index.html",
+        "file": "onevsone.html",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "file": "pickban.html",
         "width": 1920,
         "height": 1080
       }

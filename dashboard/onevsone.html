@@ -79,10 +79,10 @@
 
 	<script>
 		$(document).ready(function() {
-			nodecg.sendMessage("OnevsOneStateRequest")
+			nodecg.sendMessage("M4MStateRequest")
 		})
 		var stateCache = {}
-		nodecg.listenFor("OnevsOneUpdate", (remoteState) => {
+		nodecg.listenFor("M4MUpdate", (remoteState) => {
 			if (remoteState.socketId == undefined || remoteState.socketId !== nodecg.socket.id) {
 				for (key in remoteState) {
 					if (remoteState[key] !== undefined) {
@@ -99,7 +99,7 @@
 			}
 		})
 		function flipPlayers() {
-			nodecg.sendMessage("UpdateOnevsOneData", {
+			nodecg.sendMessage("UpdateM4MData", {
 				playerLeft: $("#playerRight").val(),
 				playerRight: $("#playerLeft").val(),
 				scoreLeft: $("#scoreRight").val(),
@@ -107,7 +107,7 @@
 			})
 		}
 		function resetPlayers() {
-			nodecg.sendMessage("UpdateOnevsOneData", {
+			nodecg.sendMessage("UpdateM4MData", {
 				playerLeft: "",
 				playerRight: "",
 				scoreLeft: 0,
@@ -117,7 +117,7 @@
 		function modifyIntegerValue(id, diff) {
 			var modifiedValue = parseInt($('#' + id).val()) + diff
 			$('#' + id).val(modifiedValue)
-			nodecg.sendMessage("UpdateOnevsOneData", {[id]: modifiedValue})
+			nodecg.sendMessage("UpdateM4MData", {[id]: modifiedValue})
 		}
 		function updateModifiedColors() {
 			$("input").each(function (index) {
@@ -133,7 +133,7 @@
 			})
 		}
 		function updateLevel() {
-			nodecg.sendMessage("UpdateOnevsOneData", {level: $("#level").val()})
+			nodecg.sendMessage("UpdateM4MData", {level: $("#level").val()})
 		}
 		function updateState() {
 			var update = {}
@@ -141,7 +141,7 @@
 				update[$(this).attr("id")] = $(this).val()
 				stateCache[$(this).attr("id")] = $(this).val()
 			})
-			nodecg.sendMessage("UpdateOnevsOneData", update)
+			nodecg.sendMessage("UpdateM4MData", update)
 			updateModifiedColors()
 		}
 		$("input").on("keypress", function(e) {

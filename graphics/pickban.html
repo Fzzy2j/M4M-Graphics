@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/delaunay.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.13.2/TweenMax.min.js"></script>
+
+<head>
+	<meta charset="UTF-8">
+	<style>
+		@font-face {
+			font-family: "Metronic Pro";
+			src: url("font/MetronicPro.ttf");
+		}
+
+		p {
+			font-family: "Metronic Pro";
+			color: white;
+			margin: 0;
+			font-size: 72px;
+			white-space: nowrap;
+		}
+
+		.orangeStroke {
+			-webkit-text-stroke-width: 8px;
+			-webkit-text-stroke-color: #6E3A1A;
+		}
+
+		#hidden-resizer {
+			font-family: "Metronic Pro";
+		}
+
+		body {
+			margin: 0px auto;
+			overflow: hidden;
+		}
+
+		.bgImage {
+			position: absolute;
+			left: 0;
+			top: 0;
+			z-index: -1;
+		}
+
+		#scoreContainer {
+			position: absolute;
+			top: 250px;
+			left: 835px;
+		}
+
+		#scoreContainerCenter {
+			width: 200px;
+			height: 101px;
+		}
+
+		.centered {
+			width: 1920px;
+			position: absolute;
+			left: 0;
+			text-align: center;
+		}
+
+		.smallText {
+			font-size: 40px;
+		}
+
+		.container {
+			display: inline-block;
+			width: 361px;
+			height: 203px;
+		}
+
+		video {
+			position: absolute;
+			z-index: 1000;
+		}
+
+		canvas {
+			position: absolute;
+		}
+	</style>
+</head>
+
+<body>
+	<img src="img/pickbanbg.png" id="backgroundImage" class="bgImage">
+	<div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background-color: black; z-index: -3;">
+	</div>
+
+	<div style="position: absolute; top: 270px; left: 825px; width: 150px; height: 101px; text-align: center;">
+		<p id="scoreLeft2" class="orangeStroke">0</p>
+	</div>
+	<div style="position: absolute; top: 270px; left: 825px; width: 150px; height: 101px; text-align: center;">
+		<p id="scoreLeft">0</p>
+	</div>
+	<div style="position: absolute; top: 270px; left: 945px; width: 150px; height: 101px; text-align: center;">
+		<p id="scoreRight2" class="orangeStroke">0</p>
+	</div>
+	<div style="position: absolute; top: 270px; left: 945px; width: 150px; height: 101px; text-align: center;">
+		<p id="scoreRight">0</p>
+	</div>
+
+	<div style="position:absolute; top:12px; left: 1590px; width: 315px; height: 165px;">
+		<p style="font-size: 40px; text-align: center;" id="upnext2" class="orangeStroke wrap"></p>
+	</div>
+	<div style="position:absolute; top:12px; left: 1590px; width: 315px; height: 165px;">
+		<p style="font-size: 40px; text-align: center;" id="upnext" class="wrap"></p>
+	</div>
+
+	<div class="centered" style="top: 150px;">
+		<p class="altFont" id="round"></p>
+	</div>
+	<div class="centered" style="top: 205px;">
+		<p class="smallText altFont" id="bestOf"></p>
+	</div>
+
+	<div style="position: absolute; top: 389px; width: 1920px; text-align: center; z-index: -2;">
+		<div id="btImageContainer" style="position: absolute; left: 420px;"><img src="img/levels/bt.png" id="btImage">
+		</div>
+		<div id="bnrImageContainer" style="position: absolute; left: 781px;"><img src="img/levels/bnr.png"
+				id="bnrImage"></div>
+		<div id="ita1ImageContainer" style="position: absolute; left: 1142px;"><img src="img/levels/ita1.png"
+				id="ita1Image"></div>
+
+		<div id="ita3ImageContainer" style="position: absolute; top: 203px; left: 59px;"><img src="img/levels/ita3.png"
+				id="ita3Image"></div>
+		<div id="enc2ImageContainer" style="position: absolute; top: 203px; left: 420px;"><img src="img/levels/enc2.png"
+				id="enc2Image"></div>
+		<div id="enc3ImageContainer" style="position: absolute; top: 203px; left: 781px;"><img src="img/levels/enc3.png"
+				id="enc3Image"></div>
+		<div id="b2ImageContainer" style="position: absolute; top: 203px; left: 1142px;"><img src="img/levels/b2.png"
+				id="b2Image"></div>
+		<div id="b3ImageContainer" style="position: absolute; top: 203px; left: 1503px;"><img src="img/levels/b3.png"
+				id="b3Image"></div>
+
+		<div id="tbfImageContainer" style="position: absolute; top: 406px; left: 420px;"><img src="img/levels/tbf.png"
+				id="tbfImage"></div>
+		<div id="arkImageContainer" style="position: absolute; top: 406px; left: 781px;"><img src="img/levels/ark.png"
+				id="arkImage"></div>
+		<div id="tfwImageContainer" style="position: absolute; top: 406px; left: 1142px;"><img src="img/levels/fold.png"
+				id="tfwImage"></div>
+	</div>
+
+	<script>
+		const TWO_PI = Math.PI * 2;
+
+		class ImageShatterHandler {
+
+			constructor(id) {
+				var img = document.getElementById(id);
+				this.image = img;
+				this.container = document.getElementById(id + 'Container');
+				this.clickPosition = [img.width * 0.5, img.height * 0.5];
+				this.vertices = [];
+				this.indices = [];
+				this.fragments = [];
+				this.currentlyAnimating = false;
+				this.shattered = false;
+			}
+
+			triangulate() {
+				var rings = [
+					{ r: 50, c: 12 },
+					{ r: 150, c: 12 },
+					{ r: 300, c: 12 },
+					{ r: 1200, c: 12 } // very large in case of corner clicks
+				],
+					x,
+					y,
+					centerX = this.clickPosition[0],
+					centerY = this.clickPosition[1];
+
+				this.vertices.push([centerX, centerY]);
+
+				var standin = this
+
+				rings.forEach(function (ring) {
+					var radius = ring.r,
+						count = ring.c,
+						variance = radius * 0.25;
+
+					for (var i = 0; i < count; i++) {
+						x = Math.cos((i / count) * TWO_PI) * radius + centerX + randomRange(-variance, variance);
+						y = Math.sin((i / count) * TWO_PI) * radius + centerY + randomRange(-variance, variance);
+						standin.vertices.push([x, y]);
+					}
+				});
+
+				this.vertices.forEach(function (v) {
+					v[0] = clamp(v[0], 0, standin.imageWidth);
+					v[1] = clamp(v[1], 0, standin.imageHeight);
+				});
+
+				this.indices = Delaunay.triangulate(this.vertices);
+			}
+
+			shatter() {
+				if (!this.currentlyAnimating && !this.shattered) {
+					this.currentlyAnimating = true;
+					var hammerKey = key;
+					var box = this.image.getBoundingClientRect()
+					this.imageWidth = this.image.width
+					this.imageHeight = this.image.height
+					var top = box.top
+					var left = box.left
+
+					var offsetX = left - (1920 / 2) + 200;
+					var offsetY = $("#" + this.image.id + "Container").position().top - 40
+					$(document.body).append("<video id='hammer" + hammerKey + "' style='left: " + offsetX + "px; top: " + offsetY + "px' autoplay muted><source src='img/break.webm' type='video/webm' /></video>")
+					var video = document.getElementById("hammer" + hammerKey);
+					video.onended = function (e) {
+						$("#hammer" + hammerKey).remove();
+					}
+					setTimeout(() => {
+						nodecg.playSound('shatter')
+						var box = this.image.getBoundingClientRect()
+						this.imageWidth = this.image.width
+						this.imageHeight = this.image.height
+						var top = box.top
+						var left = box.left
+
+						this.clickPosition[0] = this.imageWidth / 2;
+						this.clickPosition[1] = this.imageHeight / 2;
+
+						this.triangulate();
+
+						var offsetX = 0//left
+						var offsetY = 0//$("#" + this.image.id + "Container").position().top
+
+						var p0, p1, p2,
+							fragment;
+						var standin = this;
+						var t10 = new TimelineMax({
+							onComplete: function () {
+								standin.currentlyAnimating = false;
+								standin.shattered = true;
+							}
+						})
+
+						for (var i = 0; i < this.indices.length; i += 3) {
+							p0 = this.vertices[this.indices[i + 0]];
+							p1 = this.vertices[this.indices[i + 1]];
+							p2 = this.vertices[this.indices[i + 2]];
+
+							fragment = new Fragment(p0, p1, p2, offsetX, offsetY, this.image);
+
+							var dx = fragment.centroid[0] - this.clickPosition[0],
+								dy = fragment.centroid[1] - this.clickPosition[1],
+								d = Math.sqrt(dx * dx + dy * dy),
+								rx = 15 * randomRange(-1, 1),
+								ry = 15 * randomRange(-1, 1),
+								rz = 8 * randomRange(-1, 1),
+								delay = d * 0.003 * randomRange(0.02, 0.07);
+							fragment.canvas.style.zIndex = -4;
+
+							var tl1 = new TimelineMax();
+
+							tl1.to(fragment.canvas, 0.17, {
+								z: -50,
+								x: dx / 8,
+								y: dy / 8,
+								rotationX: rx,
+								rotationY: ry,
+								rotationZ: rz,
+								ease: Quint.easeOut
+							});
+
+							t10.insert(tl1)
+
+							this.fragments.push(fragment);
+							this.container.appendChild(fragment.canvas);
+						}
+						$("#" + this.image.id).hide()
+					}, 600);
+				}
+			}
+
+			unshatter() {
+				if (!this.currentlyAnimating && this.shattered) {
+					this.currentlyAnimating = true;
+					var standin = this
+					var t10 = new TimelineMax({
+						onComplete: function () {
+							standin.fragments.forEach(function (f) {
+								standin.container.removeChild(f.canvas)
+							})
+							standin.fragments.length = 0
+							standin.vertices.length = 0
+							standin.indices.length = 0
+							standin.shattered = false;
+							standin.currentlyAnimating = false;
+						}
+					})
+					for (var i = 0; i < this.fragments.length; i++) {
+						var standin = this
+						var tl1 = new TimelineMax();
+
+						tl1.to(this.fragments[i].canvas, 0.17, {
+							z: 0,
+							x: 0,
+							y: 0,
+							rotationX: 0,
+							rotationY: 0,
+							rotationZ: 0,
+							ease: Quint.easeOut
+						});
+
+						t10.insert(tl1)
+					}
+					$("#" + this.image.id).show()
+				}
+			}
+		}
+
+		//////////////
+		// MATH UTILS
+		//////////////
+
+		function randomRange(min, max) {
+			return min + (max - min) * Math.random();
+		}
+
+		function clamp(x, min, max) {
+			return x < min ? min : (x > max ? max : x);
+		}
+
+		function sign(x) {
+			return x < 0 ? -1 : 1;
+		}
+
+		//////////////
+		// FRAGMENT
+		//////////////
+
+		Fragment = function (v0, v1, v2, offsetX, offsetY, img) {
+			this.v0 = v0;
+			this.v1 = v1;
+			this.v2 = v2;
+			this.offsetX = offsetX;
+			this.offsetY = offsetY;
+			this.image = img;
+
+			this.computeBoundingBox();
+			this.computeCentroid();
+			this.createCanvas();
+			this.clip();
+		};
+		Fragment.prototype = {
+			computeBoundingBox: function () {
+				var xMin = Math.min(this.v0[0], this.v1[0], this.v2[0]),
+					xMax = Math.max(this.v0[0], this.v1[0], this.v2[0]),
+					yMin = Math.min(this.v0[1], this.v1[1], this.v2[1]),
+					yMax = Math.max(this.v0[1], this.v1[1], this.v2[1]);
+
+				this.box = {
+					x: xMin,
+					y: yMin,
+					w: xMax - xMin,
+					h: yMax - yMin
+				};
+			},
+			computeCentroid: function () {
+				var x = (this.v0[0] + this.v1[0] + this.v2[0]) / 3,
+					y = (this.v0[1] + this.v1[1] + this.v2[1]) / 3;
+
+				this.centroid = [x, y];
+			},
+			createCanvas: function () {
+				this.canvas = document.createElement('canvas');
+				this.canvas.width = this.box.w;
+				this.canvas.height = this.box.h;
+				this.canvas.style.width = this.box.w + 'px';
+				this.canvas.style.height = this.box.h + 'px';
+				this.canvas.style.left = this.box.x + this.offsetX + 'px';
+				this.canvas.style.top = this.box.y + this.offsetY + 'px';
+				this.ctx = this.canvas.getContext('2d');
+			},
+			clip: function () {
+				this.ctx.translate(-this.box.x, -this.box.y);
+				this.ctx.beginPath();
+				this.ctx.moveTo(this.v0[0], this.v0[1]);
+				this.ctx.lineTo(this.v1[0], this.v1[1]);
+				this.ctx.lineTo(this.v2[0], this.v2[1]);
+				this.ctx.closePath();
+				this.ctx.clip();
+				this.ctx.drawImage(this.image, 0, 0);
+			}
+		};
+
+		nodecg.listenFor("updateMapPool", (availableMaps) => {
+			var maps = [
+				"bt",
+				"bnr",
+				"enc2",
+				"enc3",
+				"ita1",
+				"ita3",
+				"ark",
+				"b2",
+				"b3",
+				"tbf",
+				"tfw"
+			]
+			for (var i = 0; i <= 10; i++) {
+				$("#" + maps[i] + "ImageContainer").css("display", availableMaps.includes(maps[i]) ? "inline-block" : "none")
+			}
+		})
+		var shatters = {
+			"bt": new ImageShatterHandler("btImage"),
+			"bnr": new ImageShatterHandler("bnrImage"),
+			"enc2": new ImageShatterHandler("enc2Image"),
+			"enc3": new ImageShatterHandler("enc3Image"),
+			"ita1": new ImageShatterHandler("ita1Image"),
+			"ita3": new ImageShatterHandler("ita3Image"),
+			"ark": new ImageShatterHandler("arkImage"),
+			"b2": new ImageShatterHandler("b2Image"),
+			"b3": new ImageShatterHandler("b3Image"),
+			"tbf": new ImageShatterHandler("tbfImage"),
+			"tfw": new ImageShatterHandler("tfwImage")
+		}
+		var stateCache = {
+			"bt": "available",
+			"bnr": "available",
+			"enc2": "available",
+			"enc3": "available",
+			"ita1": "available",
+			"ita3": "available",
+			"ark": "available",
+			"b2": "available",
+			"b3": "available",
+			"tbf": "available",
+			"tfw": "available"
+		}
+		nodecg.listenFor('M4MUpdate', (remoteState) => {
+			console.log(remoteState);
+			for (key in remoteState) {
+				if (remoteState[key] != stateCache[key]) {
+					stateCache[key] = remoteState[key]
+				}
+				verifyState()
+				if (remoteState[key] !== undefined) {
+					if (key == "playerLeft") {
+						setTextWithBackground("leftPlayer", remoteState[key], 50, 0, 250, 470)
+					} else if (key == "playerRight") {
+						setTextWithBackground("rightPlayer", remoteState[key], 50, 1920 - 28, 250, 480, true)
+					} else {
+						$("#" + key).text(remoteState[key])
+						$("#" + key + "2").text(remoteState[key])
+					}
+				}
+			}
+		})
+		var showingCount = 0
+		function verifyState() {
+			var newCount = 0
+			for (var key in stateCache) {
+				if (shatters[key] == null) continue;
+				if (stateCache[key] == "available") {
+					shatters[key].unshatter()
+					$("#" + key + "ImageContainer").show()
+					$("#" + key + "Selected").show()
+					$("#" + key + "Selected").css("opacity", "0")
+					newCount++
+				} else if (stateCache[key] == "unavailable") {
+					shatters[key].unshatter()
+					$("#" + key + "ImageContainer").hide()
+					$("#" + key + "Selected").hide()
+				} else if (stateCache[key] == "banned") {
+					var shatter = shatters[key];
+					shatter.shatter()
+					$("#" + key + "ImageContainer").show()
+					$("#" + key + "Selected").show()
+					$("#" + key + "Selected").css("opacity", "0")
+					newCount++
+				} else if (stateCache[key] == "selected") {
+					shatters[key].unshatter()
+					$("#" + key + "ImageContainer").show()
+					$("#" + key + "Selected").show()
+					$("#" + key + "Selected").css("opacity", "1")
+					newCount++
+				}
+			}
+			if (showingCount != newCount) {
+				for (var key in stateCache) {
+					if (shatters[key] == null) continue;
+					shatters[key].unshatter()
+				}
+			}
+			showingCount = newCount
+		}
+		function setTextWithBackground(id, text, size, posX, posY, widthLimit, alignRight) {
+			$("#" + id + "Container").remove()
+			$(document.body).append("<div id='" + id + "Container'><p class='orangeStroke' id='" + id + "Text1'>" + text + "</p><p id='" + id + "Text2'>" + text + "</p><div id='" + id + "BgCenter' src='img/bgCenter.png'></div></div>")
+			$("#" + id + "Container").css({
+				position: 'absolute',
+				top: posY,
+				left: posX,
+			})
+			$("#" + id + "Text1").css({
+				fontSize: size + 'px',
+				transform: 'translateX(25px)',
+				lineHeight: '101px',
+				position: 'fixed'
+			})
+			$("#" + id + "Text2").css({
+				fontSize: size + 'px',
+				transform: 'translateX(25px)',
+				lineHeight: '101px',
+				position: 'fixed',
+			})
+
+			while ($("#" + id + "Text1").width() > widthLimit) {
+				$("#" + id + "Text1").css("font-size", parseInt($("#" + id + "Text1").css("font-size")) - 1)
+			}
+
+			while ($("#" + id + "Text2").width() > widthLimit) {
+				$("#" + id + "Text2").css("font-size", parseInt($("#" + id + "Text2").css("font-size")) - 1)
+			}
+
+			$("#" + id + "BgCenter").css("height", 101)
+			$("#" + id + "BgCenter").css("width", $("#" + id + "Text1").width() + 20)
+			if (alignRight) {
+				$("#" + id + "Container").css("left", posX - $("#" + id + "Container").width())
+			}
+		}
+		$(document).ready(function () {
+			$('<div />', { id: 'hidden-resizer' }).hide().appendTo(document.body);
+			nodecg.sendMessage("M4MStateRequest")
+			setInterval(function () {
+				verifyState()
+			}, 500)
+		})
+	</script>
+</body>
+
+</html>

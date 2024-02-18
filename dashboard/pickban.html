@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<head>
+	<meta charset="UTF-8">
+	<style>
+		@font-face {
+			font-family: "Metronic Pro";
+			src: url("font/MetronicPro.ttf");
+		}
+
+		p {
+			font-family: "Metronic Pro";
+			margin: 0;
+		}
+
+		#scoreLeft {
+			width: 30px;
+		}
+
+		#scoreRight {
+			width: 30px;
+		}
+
+		input {
+			margin-bottom: 10px;
+			width: 250px;
+			font-family: "Metronic Pro";
+			font-size: 20px;
+		}
+
+		select {
+			margin-bottom: 10px;
+			width: 250px;
+			font-family: "Metronic Pro";
+			font-size: 20px;
+		}
+
+		button {
+			font-family: "Metronic Pro";
+			font-size: 20px;
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+	<button onclick="showAllMaps()">SHOW ALL</button>
+	<button onclick="showOnlyStarters()">SHOW ONLY STARTERS</button>
+	<div id="bt">
+		<button onclick="toggleBanMap('bt')" id="btban">BAN</button>
+		<button onclick="toggleSelectedMap('bt')" id="btpick">WON</button>
+		<button onclick="toggleHideMap('bt')" id="bthide">HIDE</button>
+		 BT-7274
+	</div>
+	<div id="bnr">
+		<button onclick="toggleBanMap('bnr')" id="bnrban">BAN</button>
+		<button onclick="toggleSelectedMap('bnr')" id="bnrpick">WON</button>
+		<button onclick="toggleHideMap('bnr')" id="bnrhide">HIDE</button>
+		 BNR
+	</div>
+	<div id="ita1">
+		<button onclick="toggleBanMap('ita1')" id="ita1ban">BAN</button>
+		<button onclick="toggleSelectedMap('ita1')" id="ita1pick">WON</button>
+		<button onclick="toggleHideMap('ita1')" id="ita1hide">HIDE</button>
+		 ITA1
+	</div>
+	<div id="ita3">
+		<button onclick="toggleBanMap('ita3')" id="ita3ban">BAN</button>
+		<button onclick="toggleSelectedMap('ita3')" id="ita3pick">WON</button>
+		<button onclick="toggleHideMap('ita3')" id="ita3hide">HIDE</button>
+		 ITA3
+	</div>
+	<div id="enc2">
+		<button onclick="toggleBanMap('enc2')" id="enc2ban">BAN</button>
+		<button onclick="toggleSelectedMap('enc2')" id="enc2pick">WON</button>
+		<button onclick="toggleHideMap('enc2')" id="enc2hide">HIDE</button>
+		 ENC2
+	</div>
+	<div id="enc3">
+		<button onclick="toggleBanMap('enc3')" id="enc3ban">BAN</button>
+		<button onclick="toggleSelectedMap('enc3')" id="enc3pick">WON</button>
+		<button onclick="toggleHideMap('enc3')" id="enc3hide">HIDE</button>
+		 ENC3
+	</div>
+	<div id="b2">
+		<button onclick="toggleBanMap('b2')" id="b2ban">BAN</button>
+		<button onclick="toggleSelectedMap('b2')" id="b2pick">WON</button>
+		<button onclick="toggleHideMap('b2')" id="b2hide">HIDE</button>
+		 B2
+	</div>
+	<div id="b3">
+		<button onclick="toggleBanMap('b3')" id="b3ban">BAN</button>
+		<button onclick="toggleSelectedMap('b3')" id="b3pick">WON</button>
+		<button onclick="toggleHideMap('b3')" id="b3hide">HIDE</button>
+		 B3
+	</div>
+	<div id="tbf">
+		<button onclick="toggleBanMap('tbf')" id="tbfban">BAN</button>
+		<button onclick="toggleSelectedMap('tbf')" id="tbfpick">WON</button>
+		<button onclick="toggleHideMap('tbf')" id="tbfhide">HIDE</button>
+		 TBF
+	</div>
+	<div id="ark">
+		<button onclick="toggleBanMap('ark')" id="arkban">BAN</button>
+		<button onclick="toggleSelectedMap('ark')" id="arkpick">WON</button>
+		<button onclick="toggleHideMap('ark')" id="arkhide">HIDE</button>
+		 ARK
+	</div>
+	<div id="tfw">
+		<button onclick="toggleBanMap('tfw')" id="tfwban">BAN</button>
+		<button onclick="toggleSelectedMap('tfw')" id="tfwpick">WON</button>
+		<button onclick="toggleHideMap('tfw')" id="tfwhide">HIDE</button>
+		 TFW
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			nodecg.sendMessage("M4MStateRequest")
+		})
+		var stateCache = {
+			"bt": "available",
+			"bnr": "available",
+			"enc2": "available",
+			"enc3": "available",
+			"ita1": "available",
+			"ita3": "available",
+			"ark": "available",
+			"b2": "available",
+			"b3": "available",
+			"tbf": "available",
+			"tfw": "available"
+		}
+		nodecg.listenFor("M4MUpdate", (remoteState) => {
+			for (var key in remoteState) {
+				if (remoteState[key] != stateCache[key]) {
+					stateCache[key] = remoteState[key]
+					if (remoteState[key] == "available") {
+						$("#" + key + "ban").css("color", "black")
+						$("#" + key + "pick").css("color", "black")
+						$("#" + key + "hide").css("color", "black")
+					} else if (remoteState[key] == "unavailable") {
+						$("#" + key + "ban").css("color", "black")
+						$("#" + key + "pick").css("color", "black")
+						$("#" + key + "hide").css("color", "blue")
+					} else if (remoteState[key] == "banned") {
+						$("#" + key + "ban").css("color", "red")
+						$("#" + key + "pick").css("color", "black")
+						$("#" + key + "hide").css("color", "black")
+					} else if (remoteState[key] == "selected") {
+						$("#" + key + "ban").css("color", "black")
+						$("#" + key + "pick").css("color", "gold")
+						$("#" + key + "hide").css("color", "black")
+					}
+				}
+			}
+		})
+		function showOnlyStarters() {
+				nodecg.sendMessage("UpdateM4MData", {
+					bt: "unavailable",
+					bnr: "available",
+					enc2: "available",
+					enc3: "unavailable",
+					ita1: "unavailable",
+					ita3: "unavailable",
+					ark: "unavailable",
+					b2: "available",
+					b3: "unavailable",
+					tbf: "unavailable",
+					tfw: "unavailable",
+				})
+		}
+		function showAllMaps() {
+				nodecg.sendMessage("UpdateM4MData", {
+					bt: "available",
+					bnr: "available",
+					enc2: "available",
+					enc3: "available",
+					ita1: "available",
+					ita3: "available",
+					ark: "available",
+					b2: "available",
+					b3: "available",
+					tbf: "available",
+					tfw: "available",
+				})
+		}
+		function toggleHideMap(map) {
+			if (stateCache[map] == "unavailable") {
+				nodecg.sendMessage("UpdateM4MData", { [map]: "available" })
+			} else {
+				nodecg.sendMessage("UpdateM4MData", { [map]: "unavailable" })
+			}
+		}
+		function toggleSelectedMap(map) {
+			if (stateCache[map] == "selected") {
+				nodecg.sendMessage("UpdateM4MData", { [map]: "available" })
+			} else {
+				nodecg.sendMessage("UpdateM4MData", { [map]: "selected" })
+			}
+		}
+		function toggleBanMap(map) {
+			if (stateCache[map] == "banned") {
+				nodecg.sendMessage("UpdateM4MData", { [map]: "available" })
+			} else {
+				nodecg.sendMessage("UpdateM4MData", { [map]: "banned" })
+			}
+		}
+	</script>
+</body>
+</html>

@@ -172,10 +172,21 @@ var state = {
 	playerRightAverageTime: "",
 	caster1: "",
 	caster2: "",
-	caster3: ""
+	caster3: "",
+	"bt": "available",
+	"bnr": "available",
+	"enc2": "available",
+	"enc3": "available",
+	"ita1": "available",
+	"ita3": "available",
+	"ark": "available",
+	"b2": "available",
+	"b3": "available",
+	"tbf": "available",
+	"tfw": "available"
 }
-if (fs.existsSync('./OnevsOneState.json')) {
-	state = JSON.parse(fs.readFileSync("./OnevsOneState.json"))
+if (fs.existsSync('./M4M-State.json')) {
+	state = JSON.parse(fs.readFileSync("./M4M-State.json"))
 }
 
 module.exports = nodecg => {
@@ -187,7 +198,7 @@ module.exports = nodecg => {
 			state.playerLeftTourneyPB = getSecondsAsTime(leftStats.PB)
 			state.playerLeftAverageTime = getSecondsAsTime(leftStats.averageTime)
 		} else {
-			state.playerLeftWinLoss = 0 + " - " + 0
+			state.playerLeftWinLoss = 0 + "-" + 0
 			state.playerLeftTourneyPB = "8:88"
 			state.playerLeftAverageTime = "8:88"
 		}
@@ -196,25 +207,25 @@ module.exports = nodecg => {
 			state.playerRightTourneyPB = getSecondsAsTime(rightStats.PB)
 			state.playerRightAverageTime = getSecondsAsTime(rightStats.averageTime)
 		} else {
-			state.playerRightWinLoss = 0 + " - " + 0
+			state.playerRightWinLoss = 0 + "-" + 0
 			state.playerRightTourneyPB = "8:88"
 			state.playerRightAverageTime = "8:88"
 		}
 		state.socketId = ignoreId
-		nodecg.sendMessage('OnevsOneUpdate', state)
+		nodecg.sendMessage('M4MUpdate', state)
 		delete state.socketId
 	}
-	nodecg.listenFor('OnevsOneStateRequest', (id) => {
+	nodecg.listenFor('M4MStateRequest', (id) => {
 		sendDataUpdate(id)
 	});
-	nodecg.listenFor('UpdateOnevsOneData', (value) => {
+	nodecg.listenFor('UpdateM4MData', (value) => {
 		for (key in value) {
 			state[key] = value[key]
 		}
 		sendDataUpdate(state.socketId)
 		delete state.socketId
 		const jsonString = JSON.stringify(state)
-		fs.writeFile('./OnevsOneState.json', jsonString, err => {
+		fs.writeFile('./M4M-State.json', jsonString, err => {
 			if (err) {
 				console.log('Error writing file', err)
 			} else {
