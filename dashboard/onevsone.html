@@ -63,7 +63,23 @@
 	<input id="round" type="text" autocomplete="off" oninput="updateModifiedColors()" class="forceUppercase">
 	<input id="bestOf" type="text" autocomplete="off" oninput="updateModifiedColors()" class="forceUppercase">
 	<select id="level" onchange="updateLevel()">
-		<option value="groupstage">Group Stage</option>
+		<option value="BT-7274">BT-7274</option>
+		<option value="Blood and Rust">Blood and Rust</option>
+		<option value="Into the Abyss 1">Abyss 1</option>
+		<option value="Into the Abyss 3">Abyss 3</option>
+		<option value="Effect and Cause 2">Effect and Cause 2</option>
+		<option value="Effect and Cause 3">Effect and Cause 3</option>
+		<option value="The Beacon 2">Beacon 2</option>
+		<option value="The Beacon 3">Beacon 3</option>
+		<option value="Trial by Fire">Trial by Fire</option>
+		<option value="The Ark">The Ark</option>
+		<option value="The Fold Weapon">The Fold Weapon</option>
+	</select>
+	<select id="background" onchange="updateBackground()">
+		<option value="groups">Group Stage</option>
+		<option value="winners">Winners Stage</option>
+		<option value="losers">Losers Stage</option>
+		<option value="top3">Top 3</option>
 	</select>
 	<p>CASTERS</p>
 	<input id="caster1" type="text" autocomplete="off" oninput="updateModifiedColors()" class="forceUppercase">
@@ -134,6 +150,9 @@
 		}
 		function updateLevel() {
 			nodecg.sendMessage("UpdateM4MData", {level: $("#level").val()})
+		}
+		function updateBackground() {
+			nodecg.sendMessage("UpdateM4MData", {background: $("#background").val()})
 		}
 		function updateState() {
 			var update = {}

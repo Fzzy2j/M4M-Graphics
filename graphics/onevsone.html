@@ -79,7 +79,7 @@
 </head>
 
 <body>
-	<img src="img/groupstagebg.png" id="backgroundImage" class="bgImage">
+	<img src="img/onevsone backgrounds/groupsbg.png" id="backgroundImage" class="bgImage">
 
 	<div style="position: absolute; top: 270px; left: 825px; width: 150px; height: 101px; text-align: center;">
 		<p id="scoreLeft2" class="orangeStroke">0</p>
@@ -203,12 +203,12 @@
 						}
 					}
 				}
-				var level = remoteState.level.replaceAll(" ", "").toLowerCase()
-				if (!$("#backgroundImage").attr("src").includes(level)) {
+				var background = remoteState.background.replaceAll(" ", "").toLowerCase()
+				if (!$("#backgroundImage").attr("src").includes(background)) {
 					var fade = $("#backgroundImage").clone()
 					fade.attr("id", "#backgroundImageFade")
 					fade.insertAfter("#backgroundImage")
-					$("#backgroundImage").attr("src", "img/" + level + "bg.png")
+					$("#backgroundImage").attr("src", "img/onevsone backgrounds/" + background + "bg.png")
 					fade.animate({
 						opacity: 0
 					}, 1000, function () {

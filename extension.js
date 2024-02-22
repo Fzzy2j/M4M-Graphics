@@ -32,11 +32,28 @@ async function saveCredentials(client) {
 }
 
 var playerMatches = {}
+var playerSeeds = {}
+
+async function retrieveSeeds(auth) {
+	const sheets = google.sheets({ version: 'v4', auth });
+	const res = await sheets.spreadsheets.values.get({
+		spreadsheetId: '1AzTE-72nHitBlHeZiwPjw4-8isjngrjQagUa_ghUSt8',
+		range: 'Seeds!A1:A',
+	});
+	const rows = res.data.values;
+	if (!rows || rows.length === 0) {
+		console.log('No data found.');
+		return;
+	}
+	rows.forEach((row, i) => {
+		playerSeeds[row[0]] = i + 1;
+	});
+}
 
 async function retrieveData(auth) {
 	const sheets = google.sheets({ version: 'v4', auth });
 	const res = await sheets.spreadsheets.values.get({
-		spreadsheetId: '1f_DzgDYrAcBjXjxUfI1nhrGtLrBUKASaNQoIZ4rY7I0',
+		spreadsheetId: '1AzTE-72nHitBlHeZiwPjw4-8isjngrjQagUa_ghUSt8',
 		range: 'Data!A1:R',
 	});
 	const rows = res.data.values;
@@ -91,6 +108,7 @@ async function authorize() {
 
 function updateSheetData() {
 	authorize().then(retrieveData).catch(console.error);
+	authorize().then(retrieveSeeds).catch(console.error);
 }
 
 function getTimeAsSeconds(time) {
@@ -164,6 +182,7 @@ var state = {
 	round: "",
 	bestOf: "",
 	level: "",
+	background: "",
 	playerLeftWinLoss: "",
 	playerLeftTourneyPB: "",
 	playerLeftAverageTime: "",
@@ -194,19 +213,23 @@ module.exports = nodecg => {
 		var leftStats = getPlayerStats(state.playerLeft, state.level)
 		var rightStats = getPlayerStats(state.playerRight, state.level)
 		if (leftStats !== undefined) {
+			state.playerLeftSeed = playerSeeds[state.playerLeft]
 			state.playerLeftWinLoss = leftStats.wins + " - " + leftStats.losses
 			state.playerLeftTourneyPB = getSecondsAsTime(leftStats.PB)
 			state.playerLeftAverageTime = getSecondsAsTime(leftStats.averageTime)
 		} else {
+			state.playerLeftSeed = 0
 			state.playerLeftWinLoss = 0 + "-" + 0
 			state.playerLeftTourneyPB = "8:88"
 			state.playerLeftAverageTime = "8:88"
 		}
 		if (rightStats !== undefined) {
+			state.playerRightSeed = playerSeeds[state.playerRight]
 			state.playerRightWinLoss = rightStats.wins + " - " + rightStats.losses
 			state.playerRightTourneyPB = getSecondsAsTime(rightStats.PB)
 			state.playerRightAverageTime = getSecondsAsTime(rightStats.averageTime)
 		} else {
+			state.playerRightSeed = 0
 			state.playerRightWinLoss = 0 + "-" + 0
 			state.playerRightTourneyPB = "8:88"
 			state.playerRightAverageTime = "8:88"
@@ -234,5 +257,5 @@ module.exports = nodecg => {
 	})
 };
 
-//updateSheetData()
-//setInterval(updateSheetData, 20000, 0);
+updateSheetData()
+setInterval(updateSheetData, 20000, 0);

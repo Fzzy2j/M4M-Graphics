@@ -8,16 +8,32 @@
 	<meta charset="UTF-8">
 	<style>
 		@font-face {
-			font-family: "Metronic Pro";
-			src: url("font/MetronicPro.ttf");
+			font-family: "NixieOne-Regular";
+			src: url("font/NixieOne-Regular.ttf");
+		}
+
+		@font-face {
+			font-family: "Semplicita";
+			src: url("font/Semplicita Light.otf");
+		}
+
+		.altFont {
+			font-family: "Semplicita";
 		}
 
 		p {
-			font-family: "Metronic Pro";
+			font-family: "NixieOne-Regular";
 			color: white;
 			margin: 0;
-			font-size: 72px;
+			font-size: 50px;
 			white-space: nowrap;
+			-webkit-text-fill-color: white;
+			-webkit-text-stroke-width: 1px;
+			-webkit-text-stroke-color: white;
+		}
+
+		.wrap {
+			white-space: normal;
 		}
 
 		.orangeStroke {
@@ -26,7 +42,7 @@
 		}
 
 		#hidden-resizer {
-			font-family: "Metronic Pro";
+			font-family: "NixieOne-Regular";
 		}
 
 		body {
@@ -81,21 +97,21 @@
 </head>
 
 <body>
-	<img src="img/pickbanbg.png" id="backgroundImage" class="bgImage">
+	<img src="img/pickban backgrounds/groupsbg.png" id="backgroundImage" class="bgImage">
 	<div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background-color: black; z-index: -3;">
 	</div>
 
-	<div style="position: absolute; top: 270px; left: 825px; width: 150px; height: 101px; text-align: center;">
-		<p id="scoreLeft2" class="orangeStroke">0</p>
+	<div style="position: absolute; top: 320px; left: 750px; width: 150px; height: 101px; text-align: center;">
+		<p id="scoreLeft2" style="font-size: 60px" class="orangeStroke">0</p>
 	</div>
-	<div style="position: absolute; top: 270px; left: 825px; width: 150px; height: 101px; text-align: center;">
-		<p id="scoreLeft">0</p>
+	<div style="position: absolute; top: 320px; left: 750px; width: 150px; height: 101px; text-align: center;">
+		<p id="scoreLeft" style="font-size: 60px">0</p>
 	</div>
-	<div style="position: absolute; top: 270px; left: 945px; width: 150px; height: 101px; text-align: center;">
-		<p id="scoreRight2" class="orangeStroke">0</p>
+	<div style="position: absolute; top: 320px; left: 1017px; width: 150px; height: 101px; text-align: center;">
+		<p id="scoreRight2" style="font-size: 60px" class="orangeStroke">0</p>
 	</div>
-	<div style="position: absolute; top: 270px; left: 945px; width: 150px; height: 101px; text-align: center;">
-		<p id="scoreRight">0</p>
+	<div style="position: absolute; top: 320px; left: 1017px; width: 150px; height: 101px; text-align: center;">
+		<p id="scoreRight" style="font-size: 60px">0</p>
 	</div>
 
 	<div style="position:absolute; top:12px; left: 1590px; width: 315px; height: 165px;">
@@ -105,10 +121,10 @@
 		<p style="font-size: 40px; text-align: center;" id="upnext" class="wrap"></p>
 	</div>
 
-	<div class="centered" style="top: 150px;">
+	<div class="centered" style="top: 180px;">
 		<p class="altFont" id="round"></p>
 	</div>
-	<div class="centered" style="top: 205px;">
+	<div class="centered" style="top: 245px;">
 		<p class="smallText altFont" id="bestOf"></p>
 	</div>
 
@@ -137,6 +153,30 @@
 				id="arkImage"></div>
 		<div id="tfwImageContainer" style="position: absolute; top: 406px; left: 1142px;"><img src="img/levels/fold.png"
 				id="tfwImage"></div>
+	</div>
+
+	<div style="position: absolute; top: 389px; width: 1920px; text-align: center; z-index: -2;">
+		<div style="position: absolute; left: 420px;"><img src="img/unavailable.png" id="btUnavailable"></div>
+		<div style="position: absolute; left: 781px;"><img src="img/unavailable.png" id="bnrUnavailable"></div>
+		<div style="position: absolute; left: 1142px;"><img src="img/unavailable.png" id="ita1Unavailable"></div>
+
+		<div style="position: absolute; top: 203px; left: 59px;"><img src="img/unavailable.png" id="ita3Unavailable">
+		</div>
+		<div style="position: absolute; top: 203px; left: 420px;"><img src="img/unavailable.png" id="enc2Unavailable">
+		</div>
+		<div style="position: absolute; top: 203px; left: 781px;"><img src="img/unavailable.png" id="enc3Unavailable">
+		</div>
+		<div style="position: absolute; top: 203px; left: 1142px;"><img src="img/unavailable.png" id="b2Unavailable">
+		</div>
+		<div style="position: absolute; top: 203px; left: 1503px;"><img src="img/unavailable.png" id="b3Unavailable">
+		</div>
+
+		<div style="position: absolute; top: 406px; left: 420px;"><img src="img/unavailable.png" id="tbfUnavailable">
+		</div>
+		<div style="position: absolute; top: 406px; left: 781px;"><img src="img/unavailable.png" id="arkUnavailable">
+		</div>
+		<div style="position: absolute; top: 406px; left: 1142px;"><img src="img/unavailable.png" id="tfwUnavailable">
+		</div>
 	</div>
 
 	<script>
@@ -202,8 +242,8 @@
 					var top = box.top
 					var left = box.left
 
-					var offsetX = left - (1920 / 2) + 200;
-					var offsetY = $("#" + this.image.id + "Container").position().top - 40
+					var offsetX = left - (1920 / 2) + 950;
+					var offsetY = $("#" + this.image.id + "Container").position().top + 220
 					$(document.body).append("<video id='hammer" + hammerKey + "' style='left: " + offsetX + "px; top: " + offsetY + "px' autoplay muted><source src='img/break.webm' type='video/webm' /></video>")
 					var video = document.getElementById("hammer" + hammerKey);
 					video.onended = function (e) {
@@ -269,7 +309,7 @@
 							this.container.appendChild(fragment.canvas);
 						}
 						$("#" + this.image.id).hide()
-					}, 600);
+					}, 610);
 				}
 			}
 
@@ -438,53 +478,42 @@
 				verifyState()
 				if (remoteState[key] !== undefined) {
 					if (key == "playerLeft") {
-						setTextWithBackground("leftPlayer", remoteState[key], 50, 0, 250, 470)
+						setTextWithBackground("leftPlayer", remoteState[key], 50, 200, 305, 470)
 					} else if (key == "playerRight") {
-						setTextWithBackground("rightPlayer", remoteState[key], 50, 1920 - 28, 250, 480, true)
+						setTextWithBackground("rightPlayer", remoteState[key], 50, 1920 - 230, 305, 480, true)
 					} else {
 						$("#" + key).text(remoteState[key])
 						$("#" + key + "2").text(remoteState[key])
 					}
 				}
 			}
+			var background = remoteState.background.replaceAll(" ", "").toLowerCase()
+			if (!$("#backgroundImage").attr("src").includes(background)) {
+				var fade = $("#backgroundImage").clone()
+				fade.attr("id", "#backgroundImageFade")
+				fade.insertAfter("#backgroundImage")
+				$("#backgroundImage").attr("src", "img/pickban backgrounds/" + background + "bg.png")
+				fade.animate({
+					opacity: 0
+				}, 1000, function () {
+					fade.remove()
+				})
+			}
 		})
-		var showingCount = 0
 		function verifyState() {
-			var newCount = 0
 			for (var key in stateCache) {
 				if (shatters[key] == null) continue;
 				if (stateCache[key] == "available") {
 					shatters[key].unshatter()
-					$("#" + key + "ImageContainer").show()
-					$("#" + key + "Selected").show()
-					$("#" + key + "Selected").css("opacity", "0")
-					newCount++
+					$("#" + key + "Unavailable").css("opacity", "0")
 				} else if (stateCache[key] == "unavailable") {
 					shatters[key].unshatter()
-					$("#" + key + "ImageContainer").hide()
-					$("#" + key + "Selected").hide()
+					$("#" + key + "Unavailable").css("opacity", "1")
 				} else if (stateCache[key] == "banned") {
-					var shatter = shatters[key];
-					shatter.shatter()
-					$("#" + key + "ImageContainer").show()
-					$("#" + key + "Selected").show()
-					$("#" + key + "Selected").css("opacity", "0")
-					newCount++
-				} else if (stateCache[key] == "selected") {
-					shatters[key].unshatter()
-					$("#" + key + "ImageContainer").show()
-					$("#" + key + "Selected").show()
-					$("#" + key + "Selected").css("opacity", "1")
-					newCount++
+					shatters[key].shatter()
+					$("#" + key + "Unavailable").css("opacity", "0")
 				}
 			}
-			if (showingCount != newCount) {
-				for (var key in stateCache) {
-					if (shatters[key] == null) continue;
-					shatters[key].unshatter()
-				}
-			}
-			showingCount = newCount
 		}
 		function setTextWithBackground(id, text, size, posX, posY, widthLimit, alignRight) {
 			$("#" + id + "Container").remove()
